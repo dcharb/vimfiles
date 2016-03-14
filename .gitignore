@@ -1,0 +1,2 @@
+# Ignore vundle files. These will be automatically generated
+bundle/
