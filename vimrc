@@ -26,7 +26,7 @@ Plugin 'd11wtq/ctrlp_bdelete.vim'
 Plugin 'DoxygenToolkit.vim'
 Plugin 'einars/js-beautify'
 if has('win32')
-   Plugin 'findstr.vim'
+   Plugin 'dcharb/findstr.vim'
 elseif has('unix')
    Plugin 'grep.vim'
 endif

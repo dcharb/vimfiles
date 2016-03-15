@@ -1,2 +1,5 @@
 # Ignore vundle files. These will be automatically generated
 bundle/
+
+# Ignore vim generated files
+.netrwhist
