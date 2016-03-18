@@ -21,7 +21,7 @@ Plugin 'VundleVim/Vundle.vim'
 
 " All plugins defined between #begin and #end
 Plugin 'camelcasemotion'
-Plugin 'ctrlp.vim'
+Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'd11wtq/ctrlp_bdelete.vim'
 Plugin 'DoxygenToolkit.vim'
 Plugin 'einars/js-beautify'
