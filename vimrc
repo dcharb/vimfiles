@@ -32,6 +32,7 @@ elseif has('unix')
 endif
 Plugin 'fugitive.vim'
 Plugin 'jshint.vim'
+Plugin 'leafgarland/typescript-vim'
 Plugin 'maksimr/vim-jsbeautify'
 Plugin 'matchit.zip'
 Plugin 'noahfrederick/vim-noctu'
