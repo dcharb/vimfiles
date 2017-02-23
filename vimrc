@@ -25,6 +25,7 @@ Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'd11wtq/ctrlp_bdelete.vim'
 Plugin 'DoxygenToolkit.vim'
 Plugin 'einars/js-beautify'
+Plugin 'fatih/vim-go'
 if has('win32')
    Plugin 'dcharb/findstr.vim'
 elseif has('unix')
@@ -32,10 +33,13 @@ elseif has('unix')
 endif
 Plugin 'fugitive.vim'
 Plugin 'jshint.vim'
+Plugin 'leafgarland/typescript-vim'
 Plugin 'maksimr/vim-jsbeautify'
 Plugin 'matchit.zip'
 Plugin 'noahfrederick/vim-noctu'
+Plugin 'pprovost/vim-ps1.git'
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'sk1418/QFGrep'
 Plugin 'Syntastic'
 Plugin 'Tagbar'
 Plugin 'The-NERD-Commenter'
@@ -166,9 +170,9 @@ let g:markdown_fenced_languages = ['html', 'javascript' ]
 " Remove auto-commenting a new line in a *.c or *.cpp file
 au FileType c,cpp setlocal comments-=:// comments+=f://
 
-" JAVASCRIPT
-au FileType javascript setlocal shiftwidth=2     " Number of spaces for autoindent
-au FileType javascript setlocal tabstop=2        " How many spaces a tab is
+" JAVASCRIPT / JSON / YAML
+au FileType javascript,json,yaml setlocal shiftwidth=2     " Number of spaces for autoindent
+au FileType javascript,json,yaml setlocal tabstop=2        " How many spaces a tab is
 
 " XML
 " Automatically close tags when entering </ in xml files
@@ -282,6 +286,7 @@ let g:ctrlp_max_height = 20
 let g:ctrlp_mruf_case_sensitive = 0
 let g:ctrlp_regexp = 1        " Search using regex
 let g:ctrlp_switch_buffer = 0
+"let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
 let g:ctrlp_working_path_mode = 0
 nnoremap ;b :CtrlPBuffer<CR>
 nnoremap ;f :CtrlP<CR>
