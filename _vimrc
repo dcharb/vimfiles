@@ -32,6 +32,8 @@ elseif has('unix')
    Plugin 'grep.vim'
 endif
 Plugin 'fugitive.vim'
+"Plugin 'gabrielelana/vim-markdown' -> This overrides the vimwiki <CR> normal mode command
+Plugin 'idanarye/vim-merginal'
 Plugin 'jshint.vim'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'maksimr/vim-jsbeautify'
@@ -40,13 +42,15 @@ Plugin 'noahfrederick/vim-noctu'
 Plugin 'pprovost/vim-ps1.git'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'sk1418/QFGrep'
-Plugin 'Syntastic'
+"Plugin 'suan/vim-instant-markdown'
 Plugin 'Tagbar'
 Plugin 'The-NERD-Commenter'
 Plugin 'tpope/vim-dispatch'
+Plugin 'vimwiki/vimwiki'
 Plugin 'Zenburn'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+Plugin 'vim-syntastic/syntastic'
 call vundle#end()
 
 " }}}
@@ -61,8 +65,9 @@ set encoding=utf-8
 set fileencodings=ucs-bom,utf-8,latin1
 
 let g:html_indent_inctags="head,body"
-"------------------------------------------------------------------------------"
-" COLOURS and FONT
+" }}}
+
+" COLOURS and FONT {{{
 "------------------------------------------------------------------------------"
 if has( 'gui_running' )
    colors solarized                 " Set colour
@@ -76,7 +81,7 @@ if has('win32')
 endif
 
 " Highlight the current word everywhere
-hi SameWord guifg=LightGray ctermbg=Brown
+hi SameWord guifg=LightGray ctermfg=Brown
 autocmd CursorMoved * exe printf('match SameWord /\V\<%s\>/', escape(expand('<cword>'), '/\'))
 
 " Make warning messages a little more visible
@@ -91,7 +96,7 @@ set number
 set ruler
 set nowrap       " Wrap text on screen
 set linebreak  " Wrap on characters in the breakat option. ie: space, tab, etc
-set textwidth=120 " Wrap text at column 120
+set textwidth=100 " Wrap text at column 120
 set colorcolumn=+1   " Show the max column as a different colour at textwidth+1
 
 " Options for the GUI
@@ -103,7 +108,7 @@ set guioptions-=m  " Remove menu bar
 "  GENERAL SETTINGS {{{
 "------------------------------------------------------------------------------"
 " Set current working directory to always be the directory of the current file you're in
-set autochdir
+"set autochdir
 nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>   " Change working directory to current file directory
 
 " Hide unwanted buffers instead of requiring to close them when opening a new one
@@ -162,8 +167,8 @@ endif
 
 " MARKDOWN
 au BufNewFile,BufRead *.md set filetype=markdown      " Set *.md file as markdown instead of module2 files
-au FileType markdown setlocal spell spelllang=en_ca   " Spell checking on for Canadian english
-au FileType markdown setlocal shiftwidth=4
+"au FileType markdown setlocal spell spelllang=en_ca   " Spell checking on for Canadian english
+au FileType markdown setlocal shiftwidth=2
 let g:markdown_fenced_languages = ['html', 'javascript' ]
 
 " CODE
@@ -177,6 +182,18 @@ au FileType javascript,json,yaml setlocal tabstop=2        " How many spaces a t
 " XML
 " Automatically close tags when entering </ in xml files
 au FileType xml,html inoremap </ </<C-x><C-o>
+
+" Cucumber
+au FileType cucumber setlocal shiftwidth=2     " Number of spaces for autoindent
+au FileType cucumber setlocal tabstop=2        " How many spaces a tab is
+
+" }}}
+
+"  XML File Commands {{{
+"------------------------------------------------------------------------------"
+nnoremap <leader>xml :%s/></>\r</g<CR>:0<CR>=:$<CR>
+vmap <leader>xml :'<,'>s/></>\r</g<CR>:0<CR>=:$<CR>
+nnoremap <leader>val :cexpr system( "xmllint --noout --valid " . bufname("%") )<CR>:copen<CR>
 
 " }}}
 
@@ -215,29 +232,26 @@ endif
 
 " }}}
 
-"  Remove READONLY file attribute from current file {{{
+"  Custom mappings {{{
+
+"  Remove READONLY file attribute from current file
 "  w! - Saves file
 "  !start - Start separate thread for command
 "  cmd /c - Run command and exit when done
 "  attrib -R % - Change current file (%) attributes to remove readonly (-R)
-"------------------------------------------------------------------------------"
+"------------------------------------------------------------------------------
 if has('win32')
    nnoremap <leader>rro :w!<CR> :!start cmd /c attrib -R %<CR>
 endif
 
-" }}}
-
-"  XML File Commands {{{
-"------------------------------------------------------------------------------"
-nnoremap <leader>xml :%s/></>\r</g<CR>:0<CR>=:$<CR>
-nnoremap <leader>val :cexpr system( "xmllint --noout --valid " . bufname("%") )<CR>:copen<CR>
-
-" }}}
-
-"  Open HPP or CPP of same name {{{
-"------------------------------------------------------------------------------"
+"  Open HPP or CPP of same name
+"------------------------------------------------------------------------------
 nnoremap <leader>cpp :e %<.cpp<CR>
 nnoremap <leader>hpp :e %<.hpp<CR>
+
+" Insert current date and time
+nmap <leader>tt i<C-R>=strftime("%H:%M:%S")<CR><Esc>
+nmap <leader>td i<C-R>=strftime("%Y-%m-%d")<CR><Esc>
 
 " }}}
 
@@ -277,13 +291,19 @@ set completeopt=longest,menuone  "Complete up to longest set of characters, show
 "endif
 let g:ctrlp_by_filename = 0   " Search by filename (as opposed to full path)
 let g:ctrlp_clear_cache_on_exit = 0 " 0 - Save cache on exiting VIM, 1 - clear cache
-let g:ctrlp_custom_ignore = ''
+let g:ctrlp_custom_ignore = {
+   \ 'dir': '\v[\/](\.git|_Intermediate|_IntermediateDebug|node_modules|packages)$',
+   \ 'file': '\v\.(dll|exe|lib|lnk|obj|pdb|pdf|png|so)$',
+   \ }
 let g:ctrlp_dotfiles = 0
 let g:ctrlp_extensions = ['tag']
+let g:ctrlp_lazy_update = 1
 let g:ctrlp_match_window_reversed = 0
-let g:ctrlp_max_files = 0
-let g:ctrlp_max_height = 20
+let g:ctrlp_max_depth = 12
+let g:ctrlp_max_files = 20000
+let g:ctrlp_max_height = 30
 let g:ctrlp_mruf_case_sensitive = 0
+let g:ctrlp_mruf_max = 250
 let g:ctrlp_regexp = 1        " Search using regex
 let g:ctrlp_switch_buffer = 0
 "let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
@@ -303,16 +323,17 @@ call ctrlp_bdelete#init()
 nnoremap <leader>tag :TagbarToggle<CR>
 let g:tagbar_sort = 0
 if has('win32')
-   let g:tagbar_ctags_bin = 'C:\code\bin\ctags.exe'
+   let g:tagbar_ctags_bin = 'C:\bin\ctags.exe'
 endif
-let g:tagbar_type_markdown = {
-    \ 'ctagstype' : 'markdown',
-    \ 'kinds' : [
-        \ 'h:Heading_L1',
-        \ 'i:Heading_L2',
-        \ 'k:Heading_L3'
-    \ ]
-\ }
+" Uncommenting the below really slows down loading markdown files
+"let g:tagbar_type_markdown = {
+    "\ 'ctagstype' : 'markdown',
+    "\ 'kinds' : [
+        "\ 'h:Heading_L1',
+        "\ 'i:Heading_L2',
+        "\ 'k:Heading_L3'
+    "\ ]
+"\ }
 
 " }}}
 
@@ -326,7 +347,8 @@ nnoremap <leader>doc :Dox<CR>
 "  Air-line {{{
 "------------------------------------------------------------------------------"
 set laststatus=2
-let g:airline_section_b = '0x%B'
+" Uncommenting below overrides the default statusline B showing git branch information
+"let g:airline_section_b = '0x%B'
 let g:airline_section_c = '%F'
 let g:airline_theme = 'murmur'
 
@@ -334,8 +356,15 @@ let g:airline_theme = 'murmur'
 
 "  Syntastic {{{
 "------------------------------------------------------------------------------"
-let g:syntastic_cpp_checkers=['cppcheck']
-"let g:syntastic_javascript_checkers=['eslint']
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_javascript_eslint_exe = 'npm run lint --'
+
+" Checkers for various file types
+"let g:syntastic_cpp_checkers=['cppcheck']
+let g:syntastic_javascript_checkers=['eslint']
 
 " }}}
 
@@ -345,5 +374,40 @@ set diffopt=filler,vertical
 
 " }}}
 
+"  simple-todo {{{
+"------------------------------------------------------------------------------"
+let g:simple_todo_map_normal_mode_keys = 1
+let g:simple_todo_map_insert_mode_keys = 0
+let g:simple_todo_map_visual_mode_keys = 1
+
+" }}}
+
+"  vimwiki {{{
+"------------------------------------------------------------------------------"
+let g:vimwiki_list = [{'syntax': 'markdown', 'ext': '.md'}]
+let g:vimwiki_global_ext = 0
+nmap <Leader>di <Plug>VimwikiDiaryIndex
+nmap <Leader>du <Plug>VimwikiDiaryGenerateLinks
+nmap <Leader>dd <Plug>VimwikiMakeDiaryNote
+nmap <Leader>dy <Plug>VimwikiMakeYesterdayDiaryNote
+nmap <Leader>dm <Plug>VimwikiMakeTomorrowDiaryNote
+
+" }}}
+
+"  omnicompletion {{{
+"------------------------------------------------------------------------------"
+set omnifunc=syntaxcomplete#Complete
+
+" }}}
+
+"  vim-instant-markdown {{{
+"------------------------------------------------------------------------------"
+let g:instant_markdown_slow = 1
+let g:instant_markdown_autostart = 0
+nmap <leader>md :InstantMarkdownPreview<CR>
+
+" }}}
+
 autocmd FileType css vmap <buffer> = :call RangeCSSBeautify()<cr>
 
+"hi markdownLinkText ctermbg=black
