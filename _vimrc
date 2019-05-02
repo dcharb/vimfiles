@@ -411,3 +411,5 @@ nmap <leader>md :InstantMarkdownPreview<CR>
 autocmd FileType css vmap <buffer> = :call RangeCSSBeautify()<cr>
 
 "hi markdownLinkText ctermbg=black
+
+set rtp+=$HOME/vimfiles-corporate
