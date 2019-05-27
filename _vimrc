@@ -36,6 +36,7 @@ Plugin 'fugitive.vim'
 Plugin 'idanarye/vim-merginal'
 Plugin 'jshint.vim'
 Plugin 'leafgarland/typescript-vim'
+Plugin 'lifepillar/vim-solarized8'
 Plugin 'maksimr/vim-jsbeautify'
 Plugin 'matchit.zip'
 Plugin 'noahfrederick/vim-noctu'
@@ -72,7 +73,8 @@ let g:html_indent_inctags="head,body"
 if has( 'gui_running' )
    colors solarized                 " Set colour
 else
-   colors noctu
+   " This causes links in MD files to not show up well
+   colors solarized8_low
 endif
 syntax on                        " Turn on syntax highlighting
 if has('win32')
@@ -409,7 +411,5 @@ nmap <leader>md :InstantMarkdownPreview<CR>
 " }}}
 
 autocmd FileType css vmap <buffer> = :call RangeCSSBeautify()<cr>
-
-"hi markdownLinkText ctermbg=black
 
 set rtp+=$HOME/vimfiles-corporate
