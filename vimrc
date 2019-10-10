@@ -82,13 +82,15 @@ if has('win32')
    set guifont=Consolas:h10:cANSI   " Set the font
    au GUIEnter * simalt ~x          " Maximize window on startup
 endif
+hi Comment cterm=none   "Remove italic highlighting
+hi CursorLine ctermbg=8 "Set background to light gray
 
 " Highlight the current word everywhere
 hi SameWord guifg=LightGray ctermfg=Brown
 autocmd CursorMoved * exe printf('match SameWord /\V\<%s\>/', escape(expand('<cword>'), '/\'))
 
 " Make warning messages a little more visible
-hi WarningMsg ctermfg=white ctermbg=red guifg=White guibg=Red gui=None
+"hi WarningMsg ctermfg=white ctermbg=red guifg=White guibg=Red gui=None
 
 " }}}
 
@@ -99,7 +101,7 @@ set number
 set ruler
 set nowrap       " Wrap text on screen
 set linebreak  " Wrap on characters in the breakat option. ie: space, tab, etc
-set textwidth=100 " Wrap text at column 120
+set textwidth=100 " Wrap text at this column
 set colorcolumn=+1   " Show the max column as a different colour at textwidth+1
 
 " Options for the GUI
@@ -280,13 +282,30 @@ set completeopt=longest,menuone  "Complete up to longest set of characters, show
 
 "  CtrlP {{{
 "------------------------------------------------------------------------------"
-"let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
-        "\ --ignore .git
-        "\ --ignore .svn
-        "\ --ignore .hg
-        "\ --ignore .DS_Store
-        "\ --ignore "**/*.pyc"
-        "\ -g ""'
+let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
+        \ --ignore .git
+        \ --ignore .svn
+        \ --ignore .hg
+        \ --ignore .DS_Store
+        \ --ignore _Intermediate
+        \ --ignore _IntermediateDebug
+        \ --ignore node_modules
+        \ --ignore packages
+        \ --ignore "**/*.cxx"
+        \ --ignore "**/*.dll"
+        \ --ignore "**/*.exe"
+        \ --ignore "**/*.exp"
+        \ --ignore "**/*.ilk"
+        \ --ignore "**/*.lastbuildstate"
+        \ --ignore "**/*.lib"
+        \ --ignore "**/*.lnk"
+        \ --ignore "**/*.map"
+        \ --ignore "**/*.obj"
+        \ --ignore "**/*.pdb"
+        \ --ignore "**/*.png"
+        \ --ignore "**/*.so"
+        \ --ignore "**/*.tlog"
+        \ -g ""'
 "if !has('python')
         "echo 'In order to use pymatcher plugin, you need +python compiled vim'
 "else
@@ -296,7 +315,7 @@ let g:ctrlp_by_filename = 0   " Search by filename (as opposed to full path)
 let g:ctrlp_clear_cache_on_exit = 0 " 0 - Save cache on exiting VIM, 1 - clear cache
 let g:ctrlp_custom_ignore = {
    \ 'dir': '\v[\/](\.git|_Intermediate|_IntermediateDebug|node_modules|packages)$',
-   \ 'file': '\v\.(dll|exe|lib|lnk|obj|pdb|pdf|png|so)$',
+   \ 'file': '\v\.(cxx|dll|exe|exp|ilk|lastbuildstate|lib|lnk|map|obj|pdb|pdf|png|so|tlog)$',
    \ }
 let g:ctrlp_dotfiles = 0
 let g:ctrlp_extensions = ['tag']
@@ -310,7 +329,7 @@ let g:ctrlp_mruf_max = 250
 let g:ctrlp_regexp = 1        " Search using regex
 let g:ctrlp_switch_buffer = 0
 "let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
-let g:ctrlp_working_path_mode = 0
+let g:ctrlp_working_path_mode = 'r'
 nnoremap ;b :CtrlPBuffer<CR>
 nnoremap ;f :CtrlP<CR>
 nnoremap ;m :CtrlPMRUFiles<CR>
@@ -408,6 +427,18 @@ set omnifunc=syntaxcomplete#Complete
 let g:instant_markdown_slow = 1
 let g:instant_markdown_autostart = 0
 nmap <leader>md :InstantMarkdownPreview<CR>
+
+" }}}
+
+"  Syntax highlight group {{{
+"------------------------------------------------------------------------------"
+nmap <leader>sp :call <SID>SynStack()<CR>
+function! <SID>SynStack()
+  if !exists("*synstack")
+    return
+  endif
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
 
 " }}}
 
