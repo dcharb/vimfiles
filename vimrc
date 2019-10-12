@@ -79,7 +79,7 @@ else
 endif
 syntax on                        " Turn on syntax highlighting
 if has('win32')
-   set guifont=Consolas:h10:cANSI   " Set the font
+   set guifont=Consolas:h11   " Set the font
    au GUIEnter * simalt ~x          " Maximize window on startup
 endif
 hi Comment cterm=none   "Remove italic highlighting
@@ -153,7 +153,7 @@ set history=100     " Remember many commands and search history
 set undolevels=100  " Number of undo levels
 
 " Ignore some file extensions when opening files
-set wildignore=*.swp,*.bak
+set wildignore+=*/.git/*,*.swp,*.bak
 set wildmenu
 set wildmode=longest,list
 
@@ -282,53 +282,31 @@ set completeopt=longest,menuone  "Complete up to longest set of characters, show
 
 "  CtrlP {{{
 "------------------------------------------------------------------------------"
-let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
-        \ --ignore .git
-        \ --ignore .svn
-        \ --ignore .hg
-        \ --ignore .DS_Store
-        \ --ignore _Intermediate
-        \ --ignore _IntermediateDebug
-        \ --ignore node_modules
-        \ --ignore packages
-        \ --ignore "**/*.cxx"
-        \ --ignore "**/*.dll"
-        \ --ignore "**/*.exe"
-        \ --ignore "**/*.exp"
-        \ --ignore "**/*.ilk"
-        \ --ignore "**/*.lastbuildstate"
-        \ --ignore "**/*.lib"
-        \ --ignore "**/*.lnk"
-        \ --ignore "**/*.map"
-        \ --ignore "**/*.obj"
-        \ --ignore "**/*.pdb"
-        \ --ignore "**/*.png"
-        \ --ignore "**/*.so"
-        \ --ignore "**/*.tlog"
-        \ -g ""'
-"if !has('python')
-        "echo 'In order to use pymatcher plugin, you need +python compiled vim'
-"else
-        "let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
-"endif
+" Use Ripgrep
+if executable('rg')
+   set grepprg=rg\ --color=never
+   let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
+   let g:ctrlp_use_caching = 0
+else
+   let g:ctrlp_clear_cache_on_exit = 0 " 0 - Save cache on exiting VIM, 1 - clear cache
+   let g:ctrlp_custom_ignore = {
+            \ 'dir': '\v[\/](\.git|_Intermediate|_IntermediateDebug|node_modules|packages)$',
+            \ 'file': '\v\.(cxx|dll|exe|exp|ilk|lastbuildstate|lib|lnk|map|obj|pdb|pdf|png|so|tlog)$',
+            \ }
+   let g:ctrlp_dotfiles = 0
+   let g:ctrlp_max_depth = 12
+   let g:ctrlp_max_files = 20000
+endif
+
 let g:ctrlp_by_filename = 0   " Search by filename (as opposed to full path)
-let g:ctrlp_clear_cache_on_exit = 0 " 0 - Save cache on exiting VIM, 1 - clear cache
-let g:ctrlp_custom_ignore = {
-   \ 'dir': '\v[\/](\.git|_Intermediate|_IntermediateDebug|node_modules|packages)$',
-   \ 'file': '\v\.(cxx|dll|exe|exp|ilk|lastbuildstate|lib|lnk|map|obj|pdb|pdf|png|so|tlog)$',
-   \ }
-let g:ctrlp_dotfiles = 0
 let g:ctrlp_extensions = ['tag']
 let g:ctrlp_lazy_update = 1
 let g:ctrlp_match_window_reversed = 0
-let g:ctrlp_max_depth = 12
-let g:ctrlp_max_files = 20000
 let g:ctrlp_max_height = 30
 let g:ctrlp_mruf_case_sensitive = 0
 let g:ctrlp_mruf_max = 250
 let g:ctrlp_regexp = 1        " Search using regex
 let g:ctrlp_switch_buffer = 0
-"let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
 let g:ctrlp_working_path_mode = 'r'
 nnoremap ;b :CtrlPBuffer<CR>
 nnoremap ;f :CtrlP<CR>
