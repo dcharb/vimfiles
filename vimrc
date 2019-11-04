@@ -35,7 +35,9 @@ Plugin 'fugitive.vim'
 "Plugin 'gabrielelana/vim-markdown' -> This overrides the vimwiki <CR> normal mode command
 Plugin 'idanarye/vim-merginal'
 Plugin 'jshint.vim'
+Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
+Plugin 'kana/vim-operator-user'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'lifepillar/vim-solarized8'
 Plugin 'maksimr/vim-jsbeautify'
@@ -43,6 +45,7 @@ Plugin 'matchit.zip'
 Plugin 'noahfrederick/vim-noctu'
 Plugin 'pprovost/vim-ps1.git'
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'rhysd/vim-clang-format'
 Plugin 'sk1418/QFGrep'
 "Plugin 'suan/vim-instant-markdown'
 Plugin 'Tagbar'
@@ -80,10 +83,11 @@ endif
 syntax on                        " Turn on syntax highlighting
 if has('win32')
    set guifont=Consolas:h11   " Set the font
-   au GUIEnter * simalt ~x          " Maximize window on startup
+   "au GUIEnter * simalt ~x          " Maximize window on startup
 endif
 hi Comment cterm=none   "Remove italic highlighting
 hi CursorLine ctermbg=8 "Set background to light gray
+hi ColorColumn ctermbg=darkgrey
 
 " Highlight the current word everywhere
 hi SameWord guifg=LightGray ctermfg=Brown
@@ -179,6 +183,7 @@ let g:markdown_fenced_languages = ['html', 'javascript' ]
 " CODE
 " Remove auto-commenting a new line in a *.c or *.cpp file
 au FileType c,cpp setlocal comments-=:// comments+=f://
+au FileType c,cpp map <buffer> = <Plug>(operator-clang-format)
 
 " JAVASCRIPT / JSON / YAML
 au FileType javascript,json,yaml setlocal shiftwidth=2     " Number of spaces for autoindent
@@ -266,6 +271,10 @@ nnoremap <leader>pdf :!pandoc -f markdown -t latex -o %<.pdf --toc -V geometry:m
 nnoremap <leader>html :!pandoc -f markdown -t html5 -o %<.html --toc %<CR>
 nnoremap <leader>word :!pandoc -f markdown -t docx -o %<.docx --toc %<CR>
 
+" }}}
+
+" Clang Format {{{
+"let g:clang_format#command="c:\program files\llvm\bin\clang-format"
 " }}}
 
 "  CTAGS {{{
@@ -357,7 +366,7 @@ let g:airline_theme = 'murmur'
 "  Syntastic {{{
 "------------------------------------------------------------------------------"
 let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
+let g:syntastic_auto_loc_list = 2
 let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 let g:syntastic_javascript_eslint_exe = 'npm run lint --'
