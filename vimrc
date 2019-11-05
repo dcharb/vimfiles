@@ -3,60 +3,46 @@ let mapleader = ","  "set <leader> to ','
 
 set fdm=marker  " Set folding type as marker. This allows vimrc to use comments for folding.
 
-"  VUNDLE {{{
+"  VIM-PLUG {{{
 "------------------------------------------------------------------------------"
-filetype off                  " required
 
-" Set the runtime path to include vundle and initialize
-if has('win32')
-   set rtp+=$HOME/vimfiles/bundle/Vundle.vim
-   call vundle#begin('$USERPROFILE/vimfiles/bundle/')
-elseif has('unix')
-   set rtp+=~/.vim/bundle/Vundle.vim
-   call vundle#begin()
-endif
-
-" Vundle will manage vundle
-Plugin 'VundleVim/Vundle.vim'
+call plug#begin('$HOME\vimfiles\plugged')
 
 " All plugins defined between #begin and #end
-Plugin 'camelcasemotion'
-Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'd11wtq/ctrlp_bdelete.vim'
-Plugin 'DoxygenToolkit.vim'
-Plugin 'einars/js-beautify'
-Plugin 'fatih/vim-go'
-if has('win32')
-   Plugin 'dcharb/findstr.vim'
-elseif has('unix')
-   Plugin 'grep.vim'
-endif
-Plugin 'fugitive.vim'
 "Plugin 'gabrielelana/vim-markdown' -> This overrides the vimwiki <CR> normal mode command
-Plugin 'idanarye/vim-merginal'
-Plugin 'jshint.vim'
-Plugin 'junegunn/fzf'
-Plugin 'junegunn/fzf.vim'
-Plugin 'kana/vim-operator-user'
-Plugin 'leafgarland/typescript-vim'
-Plugin 'lifepillar/vim-solarized8'
-Plugin 'maksimr/vim-jsbeautify'
-Plugin 'matchit.zip'
-Plugin 'noahfrederick/vim-noctu'
-Plugin 'pprovost/vim-ps1.git'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'rhysd/vim-clang-format'
-Plugin 'sk1418/QFGrep'
 "Plugin 'suan/vim-instant-markdown'
-Plugin 'Tagbar'
-Plugin 'The-NERD-Commenter'
-Plugin 'tpope/vim-dispatch'
-Plugin 'vimwiki/vimwiki'
-Plugin 'Zenburn'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'vim-syntastic/syntastic'
-call vundle#end()
+"Plug 'camelcasemotion'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'd11wtq/ctrlp_bdelete.vim'
+Plug 'einars/js-beautify'
+Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries' }
+if has('win32')
+   Plug 'dcharb/findstr.vim'
+elseif has('unix')
+   Plug 'grep.vim'
+endif
+Plug 'tpope/vim-fugitive'
+Plug 'idanarye/vim-merginal'
+"Plug 'jshint/jshint'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'kana/vim-operator-user'
+Plug 'leafgarland/typescript-vim'
+Plug 'lifepillar/vim-solarized8'
+Plug 'maksimr/vim-jsbeautify'
+Plug 'noahfrederick/vim-noctu'
+Plug 'altercation/vim-colors-solarized'
+Plug 'rhysd/vim-clang-format'
+Plug 'sk1418/QFGrep'
+Plug 'majutsushi/tagbar'
+Plug 'scrooloose/nerdcommenter'
+Plug 'tpope/vim-dispatch'
+Plug 'vimwiki/vimwiki'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-syntastic/syntastic'
+
+call plug#end()
 
 " }}}
 
