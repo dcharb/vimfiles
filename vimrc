@@ -161,7 +161,6 @@ endif
 "------------------------------------------------------------------------------"
 
 " MARKDOWN
-au BufNewFile,BufRead *.md set filetype=markdown      " Set *.md file as markdown instead of module2 files
 "au FileType markdown setlocal spell spelllang=en_ca   " Spell checking on for Canadian english
 au FileType markdown setlocal shiftwidth=2
 let g:markdown_fenced_languages = ['html', 'javascript' ]
@@ -303,14 +302,23 @@ let g:ctrlp_mruf_max = 250
 let g:ctrlp_regexp = 1        " Search using regex
 let g:ctrlp_switch_buffer = 0
 let g:ctrlp_working_path_mode = 'r'
-nnoremap ;b :CtrlPBuffer<CR>
 nnoremap ;f :CtrlP<CR>
-nnoremap ;m :CtrlPMRUFiles<CR>
-nnoremap ;t :CtrlPTag<CR>
+" Using FZF instead
+"nnoremap ;b :CtrlPBuffer<CR>
+"nnoremap ;m :CtrlPMRUFiles<CR>
+"nnoremap ;t :CtrlPTag<CR>
 
 " CtrlP Buffer Delete - Mark some with <c-z> and/or use <c-2> to delete
 call ctrlp_bdelete#init()
 
+" }}}
+
+"  FZF {{{
+"------------------------------------------------------------------------------"
+let g:fzf_layout = { 'down': '~50%' }
+nnoremap ;b :Buffers<CR>
+nnoremap ;t :Tags<CR>
+nnoremap ;m :History<CR>
 " }}}
 
 "  Tagbar {{{
