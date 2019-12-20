@@ -254,11 +254,29 @@ nmap <leader>td i<C-R>=strftime("%Y-%m-%d")<CR><Esc>
 
 " }}}
 
-"  Pandoc {{{
+"  Syntax highlight group {{{
 "------------------------------------------------------------------------------"
-nnoremap <leader>pdf :!pandoc -f markdown -t latex -o %<.pdf --toc -V geometry:margin=1in %<CR>
-nnoremap <leader>html :!pandoc -f markdown -t html5 -o %<.html --toc %<CR>
-nnoremap <leader>word :!pandoc -f markdown -t docx -o %<.docx --toc %<CR>
+nmap <leader>sp :call <SID>SynStack()<CR>
+function! <SID>SynStack()
+  if !exists("*synstack")
+    return
+  endif
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+
+" }}}
+
+" PLUGINS {{{
+
+"  Air-line {{{
+"------------------------------------------------------------------------------"
+set laststatus=2
+" Uncommenting below overrides the default statusline B showing git branch information
+"let g:airline_section_b = '0x%B'
+"let g:airline_section_b = '%{getcwd()}'
+"let g:airline_section_b = '%{FugitiveStatusline()}'
+let g:airline_section_c = '%F'
+let g:airline_theme = 'simple'
 
 " }}}
 
@@ -328,6 +346,42 @@ nnoremap ;t :Tags<CR>
 nnoremap ;m :History<CR>
 " }}}
 
+"  omnicompletion {{{
+"------------------------------------------------------------------------------"
+set omnifunc=syntaxcomplete#Complete
+
+" }}}
+
+"  Pandoc {{{
+"------------------------------------------------------------------------------"
+nnoremap <leader>pdf :!pandoc -f markdown -t latex -o %<.pdf --toc -V geometry:margin=1in %<CR>
+nnoremap <leader>html :!pandoc -f markdown -t html5 -o %<.html --toc %<CR>
+nnoremap <leader>word :!pandoc -f markdown -t docx -o %<.docx --toc %<CR>
+
+" }}}
+
+"  simple-todo {{{
+"------------------------------------------------------------------------------"
+let g:simple_todo_map_normal_mode_keys = 1
+let g:simple_todo_map_insert_mode_keys = 0
+let g:simple_todo_map_visual_mode_keys = 1
+
+" }}}
+
+"  Syntastic {{{
+"------------------------------------------------------------------------------"
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 2
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_javascript_eslint_exe = 'npm run lint --'
+
+" Checkers for various file types
+"let g:syntastic_cpp_checkers=['cppcheck']
+let g:syntastic_javascript_checkers=['eslint']
+
+" }}}
+
 "  Tagbar {{{
 "------------------------------------------------------------------------------"
 nnoremap <leader>tag :TagbarToggle<CR>
@@ -347,49 +401,17 @@ endif
 
 " }}}
 
-"  DoxygenToolkit {{{
+"  vim-instant-markdown {{{
 "------------------------------------------------------------------------------"
-let g:DoxygenToolkit_briefTag_pre=""
-nnoremap <leader>doc :Dox<CR>
-
-" }}}
-
-"  Air-line {{{
-"------------------------------------------------------------------------------"
-set laststatus=2
-" Uncommenting below overrides the default statusline B showing git branch information
-"let g:airline_section_b = '0x%B'
-"let g:airline_section_b = '%{getcwd()}'
-let g:airline_section_c = '%F'
-let g:airline_theme = 'simple'
-
-" }}}
-
-"  Syntastic {{{
-"------------------------------------------------------------------------------"
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 2
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 0
-let g:syntastic_javascript_eslint_exe = 'npm run lint --'
-
-" Checkers for various file types
-"let g:syntastic_cpp_checkers=['cppcheck']
-let g:syntastic_javascript_checkers=['eslint']
+let g:instant_markdown_slow = 1
+let g:instant_markdown_autostart = 0
+nmap <leader>md :InstantMarkdownPreview<CR>
 
 " }}}
 
 "  vimdiff {{{
 "------------------------------------------------------------------------------"
 set diffopt=filler,vertical
-
-" }}}
-
-"  simple-todo {{{
-"------------------------------------------------------------------------------"
-let g:simple_todo_map_normal_mode_keys = 1
-let g:simple_todo_map_insert_mode_keys = 0
-let g:simple_todo_map_visual_mode_keys = 1
 
 " }}}
 
@@ -404,30 +426,6 @@ nmap <Leader>dy <Plug>VimwikiMakeYesterdayDiaryNote
 nmap <Leader>dm <Plug>VimwikiMakeTomorrowDiaryNote
 
 " }}}
-
-"  omnicompletion {{{
-"------------------------------------------------------------------------------"
-set omnifunc=syntaxcomplete#Complete
-
-" }}}
-
-"  vim-instant-markdown {{{
-"------------------------------------------------------------------------------"
-let g:instant_markdown_slow = 1
-let g:instant_markdown_autostart = 0
-nmap <leader>md :InstantMarkdownPreview<CR>
-
-" }}}
-
-"  Syntax highlight group {{{
-"------------------------------------------------------------------------------"
-nmap <leader>sp :call <SID>SynStack()<CR>
-function! <SID>SynStack()
-  if !exists("*synstack")
-    return
-  endif
-  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
-endfunc
 
 " }}}
 
