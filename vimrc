@@ -6,7 +6,11 @@ set fdm=marker  " Set folding type as marker. This allows vimrc to use comments 
 "  VIM-PLUG {{{
 "------------------------------------------------------------------------------"
 
-call plug#begin('$HOME\vimfiles\plugged')
+if has('win32')
+   call plug#begin('$HOME\vimfiles\plugged')
+elseif has('unix')
+   call plug#begin('$HOME/.vim/plugged')
+endif
 
 " All plugins defined between #begin and #end
 "Plugin 'gabrielelana/vim-markdown' -> This overrides the vimwiki <CR> normal mode command
@@ -16,11 +20,6 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'd11wtq/ctrlp_bdelete.vim'
 Plug 'einars/js-beautify'
 Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries' }
-if has('win32')
-   Plug 'dcharb/findstr.vim'
-elseif has('unix')
-   Plug 'grep.vim'
-endif
 Plug 'tpope/vim-fugitive'
 Plug 'idanarye/vim-merginal'
 "Plug 'jshint/jshint'
@@ -29,6 +28,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'kana/vim-operator-user'
 Plug 'leafgarland/typescript-vim'
 Plug 'lifepillar/vim-solarized8'
+Plug 'lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Plug 'maksimr/vim-jsbeautify'
 Plug 'noahfrederick/vim-noctu'
 Plug 'altercation/vim-colors-solarized'
@@ -41,6 +41,7 @@ Plug 'vimwiki/vimwiki'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-syntastic/syntastic'
+Plug 'will133/vim-dirdiff'
 
 call plug#end()
 
@@ -64,7 +65,7 @@ if has( 'gui_running' )
    colors solarized                 " Set colour
 else
    " This causes links in MD files to not show up well
-   colors solarized8_low
+   colors noctu
 endif
 syntax on                        " Turn on syntax highlighting
 if has('win32')
@@ -78,6 +79,12 @@ hi ColorColumn ctermbg=darkgrey
 " Highlight the current word everywhere
 hi SameWord guifg=LightGray ctermfg=Brown
 autocmd CursorMoved * exe printf('match SameWord /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+
+" Change cursor shape for iTerm on Mac
+if $TERM_PROGRAM =~ "iTerm"
+   let &t_SI = "\<Esc>]50;CursorShape=1\x7" "Vertical bar insert mode
+   let &t_EI = "\<Esc>]50;CursorShape=0\x7" "Block bar normal mode
+endif
 
 " Make warning messages a little more visible
 "hi WarningMsg ctermfg=white ctermbg=red guifg=White guibg=Red gui=None
@@ -109,7 +116,8 @@ nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>   " Change working directory to curren
 " Hide unwanted buffers instead of requiring to close them when opening a new one
 set hidden
 
-inoremap jj <ESC>        " Press jj instead of ESC to exit insert mode
+" Alternative to ESC key
+inoremap ;; <ESC>
 
 "set autoread         " Set to auto read when a file is changed from the outside
 set ignorecase       " Ignore case when searching
@@ -216,11 +224,7 @@ vmap <leader>cop "+y
 nnoremap <leader>pas "+gp
 
 " Searching
-if has('win32')
-   nnoremap <c-f> :Rfindpattern /I<CR>
-elseif has('unix')
-   nnoremap <c-f> :Rgrep -i<CR>
-endif
+nnoremap <c-f> :Rg <C-R><C-W>
 
 " Run external commands with R
 "command! -nargs=* -complete=shellcmd R new | setlocal buftype=nofile bufhidden=hide noswapfile "| read !<args>
@@ -315,6 +319,9 @@ call ctrlp_bdelete#init()
 
 "  FZF {{{
 "------------------------------------------------------------------------------"
+if has('unix')
+   set rtp+=/usr/local/opt/fzf
+endif
 let g:fzf_layout = { 'down': '~50%' }
 nnoremap ;b :Buffers<CR>
 nnoremap ;t :Tags<CR>
@@ -352,8 +359,9 @@ nnoremap <leader>doc :Dox<CR>
 set laststatus=2
 " Uncommenting below overrides the default statusline B showing git branch information
 "let g:airline_section_b = '0x%B'
+"let g:airline_section_b = '%{getcwd()}'
 let g:airline_section_c = '%F'
-let g:airline_theme = 'murmur'
+let g:airline_theme = 'simple'
 
 " }}}
 
