@@ -335,6 +335,12 @@ call ctrlp_bdelete#init()
 
 " }}}
 
+" Fugitive {{{
+
+nmap <leader>gs :10Gstatus<CR>
+
+" }}}
+
 "  FZF {{{
 "------------------------------------------------------------------------------"
 if has('unix')
