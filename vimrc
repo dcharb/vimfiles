@@ -13,34 +13,31 @@ elseif has('unix')
 endif
 
 " All plugins defined between #begin and #end
-"Plugin 'gabrielelana/vim-markdown' -> This overrides the vimwiki <CR> normal mode command
-"Plugin 'suan/vim-instant-markdown'
-"Plug 'camelcasemotion'
+Plug 'altercation/vim-colors-solarized'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'd11wtq/ctrlp_bdelete.vim'
 Plug 'einars/js-beautify'
 Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries' }
-Plug 'tpope/vim-fugitive'
+Plug 'hashivim/vim-terraform'
 Plug 'idanarye/vim-merginal'
-"Plug 'jshint/jshint'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'kana/vim-operator-user'
 Plug 'leafgarland/typescript-vim'
 Plug 'lifepillar/vim-solarized8'
 Plug 'lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+Plug 'majutsushi/tagbar'
 Plug 'maksimr/vim-jsbeautify'
 Plug 'noahfrederick/vim-noctu'
-Plug 'altercation/vim-colors-solarized'
 Plug 'rhysd/vim-clang-format'
-Plug 'sk1418/QFGrep'
-Plug 'majutsushi/tagbar'
 Plug 'scrooloose/nerdcommenter'
+Plug 'sk1418/QFGrep'
 Plug 'tpope/vim-dispatch'
-Plug 'vimwiki/vimwiki'
+Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-syntastic/syntastic'
+Plug 'vimwiki/vimwiki'
 Plug 'will133/vim-dirdiff'
 
 call plug#end()
