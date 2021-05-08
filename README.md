@@ -2,6 +2,17 @@
 
 ## Quick Start
 
+### Linux
+
+```
+cd %HOME%
+git clone https://github.com/dcharb/vimfiles.git .vim
+cd .vim
+setup.sh
+```
+
+Open vim and run `:PluginInstall` to install all the plugins.
+
 ### Windows
 
 ```
