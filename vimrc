@@ -13,21 +13,26 @@ elseif has('unix')
 endif
 
 " All plugins defined between #begin and #end
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+Plug 'aklt/plantuml-syntax'
 Plug 'altercation/vim-colors-solarized'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'd11wtq/ctrlp_bdelete.vim'
+Plug 'dense-analysis/ale'
 Plug 'einars/js-beautify'
 Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries' }
 Plug 'hashivim/vim-terraform'
 Plug 'idanarye/vim-merginal'
-Plug 'junegunn/fzf'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/gv.vim'
+Plug 'junegunn/vim-easy-align'
 Plug 'kana/vim-operator-user'
 Plug 'leafgarland/typescript-vim'
 Plug 'lifepillar/vim-solarized8'
-Plug 'lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
-Plug 'majutsushi/tagbar'
+Plug 'posva/vim-vue'
+Plug 'preservim/tagbar'
 Plug 'maksimr/vim-jsbeautify'
+Plug 'maxmellon/vim-jsx-pretty'
+Plug 'mileszs/ack.vim'
 Plug 'noahfrederick/vim-noctu'
 Plug 'rhysd/vim-clang-format'
 Plug 'scrooloose/nerdcommenter'
@@ -36,9 +41,9 @@ Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'vim-syntastic/syntastic'
 Plug 'vimwiki/vimwiki'
 Plug 'will133/vim-dirdiff'
+Plug 'yuezk/vim-js'
 
 call plug#end()
 
@@ -95,8 +100,8 @@ set number
 set ruler
 set nowrap       " Wrap text on screen
 set linebreak  " Wrap on characters in the breakat option. ie: space, tab, etc
-set textwidth=100 " Wrap text at this column
-set colorcolumn=+1   " Show the max column as a different colour at textwidth+1
+set textwidth=120 " Wrap text at this column
+"set colorcolumn=+1   " Show the max column as a different colour at textwidth+1
 
 " Options for the GUI
 set guioptions-=T  " Remove toolbar
@@ -137,15 +142,16 @@ set expandtab        " Insert spaces for tabs
 set smarttab         " Insert tabs in front of a line according to shiftwidth
 set cindent          " Use indentation options
 set cinoptions=g0    " Set indent options. g0 - public/protected/private uses no indentation
-set shiftwidth=3     " Number of spaces for autoindent
-set tabstop=3        " How many spaces a tab is
+set shiftwidth=2     " Number of spaces for autoindent
+set tabstop=2        " How many spaces a tab is
 
 " Allow backspace to go over autoindent, end of previous line, and before the
 " start of where you started your insert
 set backspace=indent,eol,start
 
-set history=100     " Remember many commands and search history
-set undolevels=100  " Number of undo levels
+set viminfo='500,<50,s10,h " Remember last 500 recent files
+set history=100            " Remember many commands and search history
+set undolevels=100         " Number of undo levels
 
 " Ignore some file extensions when opening files
 set wildignore+=*/.git/*,*.swp,*.bak
@@ -221,7 +227,7 @@ vmap <leader>cop "+y
 nnoremap <leader>pas "+gp
 
 " Searching
-nnoremap <c-f> :Rg <C-R><C-W>
+nnoremap <c-f> :BLines 
 
 " Run external commands with R
 "command! -nargs=* -complete=shellcmd R new | setlocal buftype=nofile bufhidden=hide noswapfile "| read !<args>
@@ -249,6 +255,8 @@ nnoremap <leader>hpp :e %<.hpp<CR>
 nmap <leader>tt i<C-R>=strftime("%H:%M:%S")<CR><Esc>
 nmap <leader>td i<C-R>=strftime("%Y-%m-%d")<CR><Esc>
 
+nnoremap <leader>json :%!python -m json.tool<CR>
+
 " }}}
 
 "  Syntax highlight group {{{
@@ -265,6 +273,29 @@ endfunc
 
 " PLUGINS {{{
 
+"  ack.vim {{{
+
+" Use ripgrep for searching
+" Options include:
+" --vimgrep -> Needed to parse the rg response properly for ack.vim
+" --type-not sql -> Avoid huge sql file dumps as it slows down the search
+" --smart-case -> Search case insensitive if all lowercase pattern, Search case sensitively otherwise
+let g:ackprg = 'rg --vimgrep --type-not sql --type-not gzip --smart-case --hidden'
+
+" Auto close the Quickfix list after pressing '<enter>' on a list item
+let g:ack_autoclose = 1
+
+" Any empty ack search will search for the work the cursor is on
+let g:ack_use_cword_for_empty_search = 1
+
+" Don't jump to first match
+cnoreabbrev Ack Ack!
+
+" Maps <leader>/ so we're ready to type the search keyword
+nnoremap <Leader>/ :Ack!<Space>
+
+" }}}
+
 "  Air-line {{{
 "------------------------------------------------------------------------------"
 set laststatus=2
@@ -273,7 +304,8 @@ set laststatus=2
 "let g:airline_section_b = '%{getcwd()}'
 "let g:airline_section_b = '%{FugitiveStatusline()}'
 let g:airline_section_c = '%F'
-let g:airline_theme = 'simple'
+let g:airline_theme = 'luna'
+let g:airline_powerline_fonts = 1
 
 " }}}
 
@@ -293,45 +325,6 @@ set completeopt=longest,menuone  "Complete up to longest set of characters, show
 
 " }}}
 
-"  CtrlP {{{
-"------------------------------------------------------------------------------"
-" Use Ripgrep
-if executable('rg')
-   set grepprg=rg\ --color=never
-   let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
-   let g:ctrlp_use_caching = 0
-else
-   let g:ctrlp_clear_cache_on_exit = 0 " 0 - Save cache on exiting VIM, 1 - clear cache
-   let g:ctrlp_custom_ignore = {
-            \ 'dir': '\v[\/](\.git|_Intermediate|_IntermediateDebug|node_modules|packages)$',
-            \ 'file': '\v\.(cxx|dll|exe|exp|ilk|lastbuildstate|lib|lnk|map|obj|pdb|pdf|png|so|tlog)$',
-            \ }
-   let g:ctrlp_dotfiles = 0
-   let g:ctrlp_max_depth = 12
-   let g:ctrlp_max_files = 20000
-endif
-
-let g:ctrlp_by_filename = 0   " Search by filename (as opposed to full path)
-let g:ctrlp_extensions = ['tag']
-let g:ctrlp_lazy_update = 1
-let g:ctrlp_match_window_reversed = 0
-let g:ctrlp_max_height = 30
-let g:ctrlp_mruf_case_sensitive = 0
-let g:ctrlp_mruf_max = 250
-let g:ctrlp_regexp = 1        " Search using regex
-let g:ctrlp_switch_buffer = 0
-let g:ctrlp_working_path_mode = 'r'
-nnoremap ;f :CtrlP<CR>
-" Using FZF instead
-"nnoremap ;b :CtrlPBuffer<CR>
-"nnoremap ;m :CtrlPMRUFiles<CR>
-"nnoremap ;t :CtrlPTag<CR>
-
-" CtrlP Buffer Delete - Mark some with <c-z> and/or use <c-2> to delete
-call ctrlp_bdelete#init()
-
-" }}}
-
 " Fugitive {{{
 
 nmap <leader>gs :10Gstatus<CR>
@@ -343,10 +336,13 @@ nmap <leader>gs :10Gstatus<CR>
 if has('unix')
    set rtp+=/usr/local/opt/fzf
 endif
-let g:fzf_layout = { 'down': '~50%' }
+let g:fzf_layout = { 'down': '90%' }
+let g:fzf_preview_window = ['up:90%:hidden', 'ctrl-/']
 nnoremap ;b :Buffers<CR>
 nnoremap ;t :Tags<CR>
 nnoremap ;m :History<CR>
+nnoremap ;f :Files<CR>
+
 " }}}
 
 "  omnicompletion {{{
@@ -368,20 +364,6 @@ nnoremap <leader>word :!pandoc -f markdown -t docx -o %<.docx --toc %<CR>
 let g:simple_todo_map_normal_mode_keys = 1
 let g:simple_todo_map_insert_mode_keys = 0
 let g:simple_todo_map_visual_mode_keys = 1
-
-" }}}
-
-"  Syntastic {{{
-"------------------------------------------------------------------------------"
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 2
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 0
-let g:syntastic_javascript_eslint_exe = 'npm run lint --'
-
-" Checkers for various file types
-"let g:syntastic_cpp_checkers=['cppcheck']
-let g:syntastic_javascript_checkers=['eslint']
 
 " }}}
 
@@ -415,6 +397,12 @@ nmap <leader>md :InstantMarkdownPreview<CR>
 "  vimdiff {{{
 "------------------------------------------------------------------------------"
 set diffopt=filler,vertical
+
+" }}}
+
+"  vim-terraform {{{
+"------------------------------------------------------------------------------"
+let g:terraform_fmt_on_save=1
 
 " }}}
 
