@@ -15,7 +15,7 @@ endif
 " All plugins defined between #begin and #end
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'aklt/plantuml-syntax'
-Plug 'altercation/vim-colors-solarized'
+"Plug 'altercation/vim-colors-solarized'
 Plug 'dense-analysis/ale'
 Plug 'einars/js-beautify'
 Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries' }
@@ -27,13 +27,13 @@ Plug 'junegunn/gv.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'kana/vim-operator-user'
 Plug 'leafgarland/typescript-vim'
-Plug 'lifepillar/vim-solarized8'
-Plug 'posva/vim-vue'
+"Plug 'lifepillar/vim-solarized8'
+"Plug 'posva/vim-vue'
 Plug 'preservim/tagbar'
 Plug 'maksimr/vim-jsbeautify'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'mileszs/ack.vim'
-Plug 'noahfrederick/vim-noctu'
+"Plug 'noahfrederick/vim-noctu'
 Plug 'rhysd/vim-clang-format'
 Plug 'scrooloose/nerdcommenter'
 Plug 'sk1418/QFGrep'
@@ -66,17 +66,20 @@ let g:html_indent_inctags="head,body"
 if has( 'gui_running' )
    colors solarized                 " Set colour
 else
-   " This causes links in MD files to not show up well
-   colors noctu
+   colors slate
 endif
 syntax on                        " Turn on syntax highlighting
 if has('win32')
    set guifont=Consolas:h11   " Set the font
    "au GUIEnter * simalt ~x          " Maximize window on startup
 endif
-hi Comment cterm=none   "Remove italic highlighting
-hi CursorLine ctermbg=8 "Set background to light gray
-hi ColorColumn ctermbg=darkgrey
+
+" SpellBad is too hard to read - change it
+hi SpellBad cterm=underline ctermbg=none
+
+"hi Comment cterm=none   "Remove italic highlighting
+"hi CursorLine ctermbg=8 "Set background to light gray
+"hi ColorColumn ctermbg=darkgrey
 
 " Highlight the current word everywhere
 hi SameWord guifg=LightGray ctermfg=Brown
@@ -157,6 +160,7 @@ set undolevels=100         " Number of undo levels
 set wildignore+=*/.git/*,*.swp,*.bak
 set wildmenu
 set wildmode=longest,list
+set conceallevel=0
 
 " Sets the path variable which is used in the :find command
 set path=.\**
@@ -225,9 +229,6 @@ nnoremap <leader>sa ggVG
 " Copy & Paste using clipboard
 vmap <leader>cop "+y
 nnoremap <leader>pas "+gp
-
-" Searching
-nnoremap <c-f> :BLines 
 
 " Run external commands with R
 "command! -nargs=* -complete=shellcmd R new | setlocal buftype=nofile bufhidden=hide noswapfile "| read !<args>
@@ -325,12 +326,6 @@ set completeopt=longest,menuone  "Complete up to longest set of characters, show
 
 " }}}
 
-" Fugitive {{{
-
-nmap <leader>gs :10Gstatus<CR>
-
-" }}}
-
 "  FZF {{{
 "------------------------------------------------------------------------------"
 if has('unix')
@@ -342,6 +337,7 @@ nnoremap ;b :Buffers<CR>
 nnoremap ;t :Tags<CR>
 nnoremap ;m :History<CR>
 nnoremap ;f :Files<CR>
+nnoremap <c-f> :BLines
 
 " }}}
 
@@ -410,6 +406,7 @@ let g:terraform_fmt_on_save=1
 "------------------------------------------------------------------------------"
 let g:vimwiki_list = [{'syntax': 'markdown', 'ext': '.md'}]
 let g:vimwiki_global_ext = 0
+let g:vimwiki_conceallevel = 0
 nmap <Leader>di <Plug>VimwikiDiaryIndex
 nmap <Leader>du <Plug>VimwikiDiaryGenerateLinks
 nmap <Leader>dd <Plug>VimwikiMakeDiaryNote
